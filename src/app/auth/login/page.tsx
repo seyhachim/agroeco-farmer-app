@@ -1,0 +1,192 @@
+// app/auth/login/page.tsx
+"use client";
+
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
+import { useTranslations } from "@/lib/i18n";
+import { supabase } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext"; // Make sure you have this context
+
+export default function LoginPage() {
+  const { t, lang, setLang } = useTranslations();
+  const [email, setEmail] = useState("admin@gmail.com");
+  const [password, setPassword] = useState("password");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [isMounted, setIsMounted] = useState(false);
+  const router = useRouter();
+  const { user } = useAuth();
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Redirect if user is already logged in
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error("Login error:", error);
+        setError(
+          error.message ||
+            (lang === "kh"
+              ? "កំហុសក្នុងការចូលប្រើប្រាស់"
+              : "Login error occurred")
+        );
+        return;
+      }
+
+      if (data.user) {
+        console.log("Login successful:", data.user);
+        // The AuthContext will automatically update the user state
+        router.push("/");
+      }
+    } catch (error: any) {
+      console.error("Login error:", error);
+      setError(
+        error.message ||
+          (lang === "kh"
+            ? "កំហុសក្នុងការចូលប្រើប្រាស់"
+            : "Login error occurred")
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Show loading state until mounted to prevent hydration mismatch
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <div className="w-full max-w-md text-center">
+          <div className="animate-pulse">
+            <div className="h-12 bg-gray-200 rounded mb-4"></div>
+            <div className="space-y-4">
+              <div className="h-10 bg-gray-200 rounded"></div>
+              <div className="h-10 bg-gray-200 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't show login page if user is already logged in
+  if (user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <div className="text-center">
+          <p className="text-gray-600">
+            {lang === "kh"
+              ? "កំពុងបញ្ជូនទៅផ្ទាំងគ្រប់គ្រង..."
+              : "Redirecting to dashboard..."}
+          </p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mt-4"></div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <button
+        onClick={() => setLang(lang === "kh" ? "en" : "kh")}
+        className="absolute top-4 right-4 text-sm text-gray-600 underline"
+      >
+        {lang === "kh" ? "EN" : "ខ្មែរ"}
+      </button>
+
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl font-bold">{t("login")}</CardTitle>
+          <p className="text-gray-600">
+            {lang === "kh"
+              ? "ចូលប្រើប្រាស់គណនីរបស់អ្នក"
+              : "Sign in to your account"}
+          </p>
+        </CardHeader>
+
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                {error}
+              </div>
+            )}
+
+            <div>
+              <Label htmlFor="email">{t("email")}</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mt-1"
+                disabled={loading}
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="password">{t("password")}</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="mt-1"
+                disabled={loading}
+                required
+              />
+            </div>
+
+            <Button type="submit" className="w-full h-12" disabled={loading}>
+              {loading
+                ? lang === "kh"
+                  ? "កំពុងចូលប្រើប្រាស់..."
+                  : "Signing in..."
+                : t("login")}
+            </Button>
+
+            <div className="text-center">
+              <Link
+                href="/auth/signup"
+                className="text-sm text-green-600 hover:underline"
+              >
+                {t("switchToSignup")}
+              </Link>
+            </div>
+
+            {/* Forgot Password Link */}
+            <div className="text-center">
+              <Link
+                href="/auth/forgot-password"
+                className="text-sm text-gray-600 hover:underline"
+              >
+                {t("forgotPassword")}
+              </Link>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

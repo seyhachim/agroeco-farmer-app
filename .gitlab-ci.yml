@@ -1,0 +1,36 @@
+# .gitlab-ci.yml
+image: node:18
+
+# Cache dependencies for faster builds
+cache:
+  paths:
+    - node_modules/
+
+stages:
+  - test
+  - build
+  - deploy
+
+test:
+  stage: test
+  script:
+    - npm ci
+    - npm run build
+    - npm run lint
+    - npm test
+  rules:
+    - if: $CI_COMMIT_BRANCH
+
+build:
+  stage: build
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - .next
+      - public
+      - package.json
+    expire_in: 1 day
+  rules:
+    - if: $CI_COMMIT_BRANCH
