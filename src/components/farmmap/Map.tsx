@@ -93,7 +93,6 @@ const Map: React.FC<MapProps> = ({
     if (!mapRef.current) return;
 
     let mounted = true;
-    let createdScript: HTMLScriptElement | null = null;
 
     const initMap = async () => {
       if (!mounted || !mapRef.current || !window.google?.maps) return;
@@ -107,28 +106,36 @@ const Map: React.FC<MapProps> = ({
       await fetchFarms();
     };
 
+    const SCRIPT_ID = "google-maps-script";
+
     if (window.google?.maps) {
       initMap();
-    } else {
+    } else if (!document.getElementById(SCRIPT_ID)) {
       const script = document.createElement("script");
+      script.id = SCRIPT_ID;
       script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
       script.async = true;
       script.defer = true;
       script.onload = () => initMap();
       document.head.appendChild(script);
-      createdScript = script;
+    } else {
+      // Script tag exists but maps not ready yet — wait for it
+      const existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement;
+      existing.addEventListener("load", initMap);
     }
 
     return () => {
       mounted = false;
-      if (createdScript?.parentNode) {
-        createdScript.parentNode.removeChild(createdScript);
-      }
     };
   }, []);
 
   useEffect(() => {
-    if (!mapInstance.current || farms.length === 0) return;
+    if (
+      !mapInstance.current ||
+      !(mapInstance.current instanceof window.google?.maps?.Map) ||
+      farms.length === 0
+    )
+      return;
 
     console.log("=== MAP FILTERING DEBUG ===");
     console.log("Farms:", farms);
