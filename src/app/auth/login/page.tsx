@@ -21,9 +21,41 @@ export default function LoginPage() {
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   const { user } = useAuth();
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  // Auto-login when inside Telegram Mini App
+  useEffect(() => {
+    if (!isMounted) return;
+    const tg = (window as any).Telegram?.WebApp;
+    if (!tg?.initData) return;
+
+    setLoading(true);
+    fetch("/api/auth/telegram", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ initData: tg.initData }),
+    })
+      .then((r) => r.json())
+      .then(async ({ session, error: err }) => {
+        if (err || !session) {
+          setError(err || "Telegram login failed");
+          setLoading(false);
+          return;
+        }
+        await supabase.auth.setSession({
+          access_token: session.access_token,
+          refresh_token: session.refresh_token,
+        });
+        router.push("/");
+      })
+      .catch(() => {
+        setError("Telegram login failed");
+        setLoading(false);
+      });
+  }, [isMounted]);
 
   // Redirect if user is already logged in
   useEffect(() => {
