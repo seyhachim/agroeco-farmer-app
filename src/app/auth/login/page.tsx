@@ -104,19 +104,13 @@ export default function LoginPage() {
     }
   };
 
-  // Show loading state until mounted to prevent hydration mismatch
-  if (!isMounted) {
+  const isTelegram = isMounted && !!(window as any).Telegram?.WebApp?.initData;
+
+  // Show loading state until mounted or when inside Telegram (auto-login in progress)
+  if (!isMounted || isTelegram) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-        <div className="w-full max-w-md text-center">
-          <div className="animate-pulse">
-            <div className="h-12 bg-gray-200 rounded mb-4"></div>
-            <div className="space-y-4">
-              <div className="h-10 bg-gray-200 rounded"></div>
-              <div className="h-10 bg-gray-200 rounded"></div>
-            </div>
-          </div>
-        </div>
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-600"></div>
       </div>
     );
   }
