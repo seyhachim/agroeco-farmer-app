@@ -137,7 +137,7 @@ const PostDetailPage = () => {
         .order("created_at", { ascending: true });
 
       if (postData) {
-        const profile = postData.user_profiles;
+        const profile = postData.user_profiles as any;
 
         let tg: any = null;
         if (Array.isArray(profile?.telegram_users)) {
@@ -348,7 +348,7 @@ const PostDetailPage = () => {
       .single();
 
     if (!error && data) {
-      const profile = data.user_profiles;
+      const profile = (data as any).user_profiles;
 
       let tg: any = null;
       if (Array.isArray(profile?.telegram_users)) {
@@ -371,7 +371,7 @@ const PostDetailPage = () => {
       };
 
       if (mapped.parent_id) {
-        const updateTree = (list: any[]) =>
+        const updateTree = (list: any[]): any[] =>
           list.map((c) => {
             if (c.id === mapped.parent_id) {
               return { ...c, replies: [...c.replies, mapped] };

@@ -39,7 +39,9 @@ export default function CreatePostModal({ onClose, currentUserId }: any) {
         .eq("id", currentUserId)
         .single();
 
-      const tg = profile?.telegram_users;
+      const tg = Array.isArray(profile?.telegram_users)
+        ? profile.telegram_users[0]
+        : profile?.telegram_users;
 
       setUser({
         name: profile?.display_name || tg?.display_name || "Unknown",

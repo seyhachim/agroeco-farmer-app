@@ -37,7 +37,9 @@ export default function EditPostModal({ post, onClose }: any) {
         .eq("id", post.user_id)
         .single();
 
-      const tg = profile?.telegram_users;
+      const tg = Array.isArray(profile?.telegram_users)
+        ? profile.telegram_users[0]
+        : profile?.telegram_users;
 
       setUser({
         name: profile?.display_name || tg?.display_name || "Unknown",

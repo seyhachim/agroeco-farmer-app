@@ -73,7 +73,9 @@ export default function ShareModal({ onClose, link, postId }: ShareModalProps) {
           .eq("id", data.user.id)
           .single();
 
-        const tg = profile?.telegram_users;
+        const tg = Array.isArray(profile?.telegram_users)
+          ? profile.telegram_users[0]
+          : profile?.telegram_users;
         setUserName(profile?.display_name || tg?.display_name || "Unknown");
       }
     };
@@ -102,13 +104,6 @@ export default function ShareModal({ onClose, link, postId }: ShareModalProps) {
 
       if (updateError) {
         console.error("Error updating shares count:", updateError);
-        // Fallback: manually increment shares
-        await supabase
-          .from("posts")
-          .update({
-            shares: supabase.raw("shares + 1"),
-          })
-          .eq("id", postId);
       }
 
       // Create a record in post_shares table (if you have one)
