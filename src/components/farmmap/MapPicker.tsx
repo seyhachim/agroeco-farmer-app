@@ -25,20 +25,22 @@ const MapPicker: React.FC<MapPickerProps> = ({
       center: { lat, lng },
       zoom: 8,
       disableDefaultUI: false,
+      mapId: "agroeco_map",
     });
 
-    const marker = new window.google.maps.Marker({
+    const marker = new window.google.maps.marker.AdvancedMarkerElement({
       position: { lat, lng },
       map,
-      draggable: true,
+      gmpDraggable: true,
     });
 
     marker.addListener("dragend", (e: any) => {
-      onLocationSelect(e.latLng.lat(), e.latLng.lng());
+      const pos = marker.position as google.maps.LatLng;
+      onLocationSelect(pos.lat(), pos.lng());
     });
 
     map.addListener("click", (e: any) => {
-      marker.setPosition({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+      marker.position = { lat: e.latLng.lat(), lng: e.latLng.lng() };
       onLocationSelect(e.latLng.lat(), e.latLng.lng());
     });
 
@@ -48,7 +50,7 @@ const MapPicker: React.FC<MapPickerProps> = ({
   return (
     <>
       <Script
-        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`}
+        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=marker&loading=async`}
         strategy="afterInteractive"
         onLoad={() => setMapLoaded(true)}
       />

@@ -166,15 +166,18 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                       const location = details.geometry.location;
 
                       if (userMarkerRef.current)
-                        userMarkerRef.current.setMap(null);
+                        userMarkerRef.current.map = null;
 
-                      userMarkerRef.current = new window.google.maps.Marker({
+                      const pinImg = document.createElement("img");
+                      pinImg.src = "https://maps.google.com/mapfiles/ms/icons/red-dot.png";
+                      pinImg.style.width = "32px";
+                      pinImg.style.height = "32px";
+
+                      userMarkerRef.current = new window.google.maps.marker.AdvancedMarkerElement({
                         position: location,
                         map: mapInstance.current,
                         title: details.name,
-                        icon: {
-                          url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
-                        },
+                        content: pinImg,
                       });
 
                       mapInstance.current.panTo(location);

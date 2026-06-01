@@ -78,23 +78,17 @@ const FarmMapPage = () => {
         (pos) => {
           const { latitude, longitude } = pos.coords;
           if (userMarkerRef.current) {
-            userMarkerRef.current.setPosition({
-              lat: latitude,
-              lng: longitude,
-            });
+            userMarkerRef.current.position = { lat: latitude, lng: longitude };
           } else if (mapInstance.current) {
-            userMarkerRef.current = new window.google.maps.Marker({
+            const dot = document.createElement("div");
+            dot.style.cssText =
+              "width:16px;height:16px;background:#4285F4;border:2px solid white;border-radius:50%;box-shadow:0 0 4px rgba(0,0,0,0.4)";
+
+            userMarkerRef.current = new window.google.maps.marker.AdvancedMarkerElement({
               position: { lat: latitude, lng: longitude },
               map: mapInstance.current,
               title: "Your Location",
-              icon: {
-                path: window.google.maps.SymbolPath.CIRCLE,
-                scale: 8,
-                fillColor: "#4285F4",
-                fillOpacity: 1,
-                strokeColor: "white",
-                strokeWeight: 2,
-              },
+              content: dot,
             });
           }
 

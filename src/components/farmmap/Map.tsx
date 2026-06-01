@@ -101,6 +101,7 @@ const Map: React.FC<MapProps> = ({
         center: { lat: 12.5657, lng: 104.991 },
         zoom: 7,
         disableDefaultUI: true,
+        mapId: "agroeco_map",
       });
 
       await fetchFarms();
@@ -113,7 +114,7 @@ const Map: React.FC<MapProps> = ({
     } else if (!document.getElementById(SCRIPT_ID)) {
       const script = document.createElement("script");
       script.id = SCRIPT_ID;
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places,marker&loading=async`;
       script.async = true;
       script.defer = true;
       script.onload = () => initMap();
@@ -197,14 +198,16 @@ const Map: React.FC<MapProps> = ({
     console.log("Filtered Farms:", filteredFarms);
 
     markersRef.current = filteredFarms.map((farm) => {
-      const marker = new window.google.maps.Marker({
+      const iconImg = document.createElement("img");
+      iconImg.src = getMarkerIcon(farm.type);
+      iconImg.style.width = "30px";
+      iconImg.style.height = "30px";
+
+      const marker = new window.google.maps.marker.AdvancedMarkerElement({
         position: { lat: farm.lat, lng: farm.lng },
         map: mapInstance.current,
         title: farm.name,
-        icon: {
-          url: getMarkerIcon(farm.type),
-          scaledSize: new window.google.maps.Size(30, 30),
-        },
+        content: iconImg,
       });
 
       marker.addListener("click", () => {
