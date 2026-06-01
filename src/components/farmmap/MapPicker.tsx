@@ -34,7 +34,7 @@ const MapPicker: React.FC<MapPickerProps> = ({
       gmpDraggable: true,
     });
 
-    marker.addListener("dragend", (e: any) => {
+    marker.addListener("gmp-dragend", (_e: any) => {
       const pos = marker.position as google.maps.LatLng;
       onLocationSelect(pos.lat(), pos.lng());
     });

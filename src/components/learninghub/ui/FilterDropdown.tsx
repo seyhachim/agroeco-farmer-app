@@ -68,8 +68,6 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
                       key={cat}
                       className="px-3 py-2 cursor-pointer hover:bg-gray-100 text-[#0D1B2A] text-sm font-normal leading-[26px]"
                       onClick={() => handleItemClick(cat)}
-                      whileHover={{ backgroundColor: "#F3F4F6" }}
-                      transition={{ duration: 0.1 }}
                     >
                       {cat}
                     </motion.li>

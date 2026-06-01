@@ -11,7 +11,6 @@ import {
   Share2,
   Clock,
 } from "lucide-react";
-import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import CommentItem from "@/components/forum/CommentItem";
 import ShareModal from "@/components/forum/ShareModal";
@@ -449,12 +448,10 @@ const PostDetailPage = () => {
       <div className="mt-16 p-6 space-y-4 animate-slide-down">
         <div className="flex flex-col gap-5 px-1 py-4">
           <div className="flex items-center gap-2.5">
-            <Image
+            <img
               src={avatarSrc}
               alt="User Avatar"
-              width={40}
-              height={40}
-              className="rounded-full object-cover transition-transform duration-200 hover:scale-105"
+              className="w-10 h-10 rounded-full object-cover transition-transform duration-200 hover:scale-105"
             />
             <div className="flex flex-col">
               <span className="font-medium text-[14px] text-[#0d1b2a] wrap-break-word">

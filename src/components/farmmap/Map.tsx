@@ -83,7 +83,6 @@ const Map: React.FC<MapProps> = ({
     if (error) {
       console.error("Error fetching farm data:", error.message);
     } else {
-      console.log("Fetched farms:", data);
       setFarms(data || []);
     }
     setMapLoading(false);
@@ -95,9 +94,11 @@ const Map: React.FC<MapProps> = ({
     let mounted = true;
 
     const initMap = async () => {
-      if (!mounted || !mapRef.current || !window.google?.maps) return;
+      if (!mounted || !mapRef.current) return;
 
-      mapInstance.current = new window.google.maps.Map(mapRef.current, {
+      const { Map } = await window.google.maps.importLibrary("maps") as any;
+
+      mapInstance.current = new Map(mapRef.current, {
         center: { lat: 12.5657, lng: 104.991 },
         zoom: 7,
         disableDefaultUI: true,
@@ -109,20 +110,34 @@ const Map: React.FC<MapProps> = ({
 
     const SCRIPT_ID = "google-maps-script";
 
+    const loadMaps = () => {
+      if (window.google?.maps?.importLibrary) {
+        initMap();
+      } else {
+        // importLibrary not ready yet, poll briefly
+        const poll = setInterval(() => {
+          if (window.google?.maps?.importLibrary) {
+            clearInterval(poll);
+            initMap();
+          }
+        }, 50);
+      }
+    };
+
     if (window.google?.maps) {
-      initMap();
+      loadMaps();
     } else if (!document.getElementById(SCRIPT_ID)) {
       const script = document.createElement("script");
       script.id = SCRIPT_ID;
       script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places,marker&loading=async`;
       script.async = true;
       script.defer = true;
-      script.onload = () => initMap();
+      script.onload = () => loadMaps();
       document.head.appendChild(script);
     } else {
-      // Script tag exists but maps not ready yet — wait for it
       const existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement;
-      existing.addEventListener("load", initMap);
+      existing.addEventListener("load", loadMaps);
+      if (window.google?.maps) loadMaps();
     }
 
     return () => {
@@ -137,13 +152,6 @@ const Map: React.FC<MapProps> = ({
       farms.length === 0
     )
       return;
-
-    console.log("=== MAP FILTERING DEBUG ===");
-    console.log("Farms:", farms);
-    console.log("Selected Filters:", selectedFilters);
-    console.log("Selected Remarks (English):", selectedRemarks);
-    console.log("Search Term:", searchTerm);
-    console.log("Current Language:", lang);
 
     markersRef.current.forEach((marker) => marker.setMap(null));
     markersRef.current = [];
@@ -161,22 +169,15 @@ const Map: React.FC<MapProps> = ({
     const englishRemarksFromFilters =
       getEnglishRemarksFromFilters(selectedFilters);
 
-    console.log("English remarks from filters:", englishRemarksFromFilters);
-
     let activeFilters: string[] = [];
 
     if (selectedFilters.length > 0) {
       activeFilters = englishRemarksFromFilters;
-      console.log("Using filter system:", activeFilters);
     } else if (selectedRemarks.length > 0) {
       activeFilters = selectedRemarks;
-      console.log("Using English remark system:", activeFilters);
     } else {
       activeFilters = currentFilterMap[allKey];
-      console.log("No filters selected - showing ALL farms");
     }
-
-    console.log("Final active filters:", activeFilters);
 
     const filteredFarms = farms.filter((farm) => {
       const farmType = farm.type;
@@ -188,14 +189,8 @@ const Map: React.FC<MapProps> = ({
         farm.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         farm.address?.toLowerCase().includes(searchTerm.toLowerCase());
 
-      console.log(
-        `Farm: ${farm.name}, Type: ${farmType}, matchesType: ${matchesType}, matchesSearch: ${matchesSearch}`
-      );
-
       return matchesType && matchesSearch;
     });
-
-    console.log("Filtered Farms:", filteredFarms);
 
     markersRef.current = filteredFarms.map((farm) => {
       const iconImg = document.createElement("img");

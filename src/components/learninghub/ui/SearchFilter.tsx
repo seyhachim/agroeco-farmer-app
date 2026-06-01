@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { useTranslations } from "../../../lib/i18n";
 
@@ -23,11 +22,10 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
       whileHover={{ scale: 1.02 }}
       className="w-[382px] h-9 rounded-[10px] bg-white flex items-center pl-4 pr-4 border border-[#E3E3E3] mt-[22px] ml-[24px] mr-[24px] font-[Kantumruy_Pro]"
     >
-      <Image
+      <img
         src="/icons/learninghub/icon_search.svg"
         alt="search-icon"
-        width={18}
-        height={18}
+        className="w-[18px] h-[18px]"
       />
       <input
         type="text"

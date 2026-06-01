@@ -349,12 +349,6 @@ const ProductDetailPage = () => {
 
     setIsSubmittingEdit(true);
     try {
-      console.log("Submitting edit with images:", {
-        existingImages: existingReviewImages,
-        newImages: editReviewImages.length,
-        totalImages: existingReviewImages.length + editReviewImages.length,
-      });
-
       // Delete the old review first
       await reviewsApi.deleteReview(editingReview.id);
 
@@ -456,18 +450,10 @@ const ProductDetailPage = () => {
   ) => {
     if (isExisting) {
       // Remove from existing images using filter (safer than splice)
-      setExistingReviewImages((prev) => {
-        const newImages = prev.filter((_, i) => i !== index);
-        console.log("Removed existing image, remaining:", newImages.length);
-        return newImages;
-      });
+      setExistingReviewImages((prev) => prev.filter((_, i) => i !== index));
     } else {
       // Remove from new images using filter
-      setEditReviewImages((prev) => {
-        const newImages = prev.filter((_, i) => i !== index);
-        console.log("Removed new image, remaining:", newImages.length);
-        return newImages;
-      });
+      setEditReviewImages((prev) => prev.filter((_, i) => i !== index));
     }
   };
 
@@ -489,16 +475,15 @@ const ProductDetailPage = () => {
     if (navigator.share) {
       try {
         await navigator.share(shareData);
-      } catch (error) {
-        console.log("Error sharing:", error);
+      } catch {
+        // user cancelled or share not supported
       }
     } else {
       try {
         await navigator.clipboard.writeText(window.location.href);
         setShowShareOptions(true);
         setTimeout(() => setShowShareOptions(false), 3000);
-      } catch (error) {
-        console.log("Error copying to clipboard:", error);
+      } catch {
         setShowShareOptions(true);
       }
     }

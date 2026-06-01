@@ -1,7 +1,6 @@
 "use client";
 
 import { X, Hash, Globe } from "lucide-react";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Kantumruy_Pro } from "next/font/google";
@@ -127,12 +126,10 @@ export default function EditPostModal({ post, onClose }: any) {
 
           {user && (
             <div className="flex items-center gap-3 mt-6 mb-6 animate-fade-in">
-              <Image
+              <img
                 src={user.avatar}
                 alt="Avatar"
-                width={42}
-                height={42}
-                className="rounded-full border transition-transform duration-200 hover:scale-105"
+                className="w-[42px] h-[42px] rounded-full border object-cover transition-transform duration-200 hover:scale-105"
               />
               <div>
                 <p className="font-semibold">{user.name}</p>

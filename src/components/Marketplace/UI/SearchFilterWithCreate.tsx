@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { useTranslations } from "../../../lib/i18n";
 
@@ -69,11 +68,10 @@ export const SearchFilterWithCreate: React.FC<SearchFilterProps> = ({
           showCreateButton ? "flex-1" : "w-full"
         } h-9 rounded-xl border border-[#E3E3E3] bg-white px-3`}
       >
-        <Image
+        <img
           src="/icons/learninghub/icon_search.svg"
           alt="search-icon"
-          width={16}
-          height={16}
+          className="w-4 h-4"
         />
         <input
           type="text"

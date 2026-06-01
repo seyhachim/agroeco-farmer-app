@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { useTranslations } from "../../../lib/i18n";
 
@@ -55,11 +54,10 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
             className="flex items-center gap-1 mt-3 mb-3"
             whileTap={{ scale: 0.95 }}
           >
-            <Image
+            <img
               src={activeTab === tab.id ? tab.activeIcon : tab.icon}
               alt={`${tab.label} icon`}
-              width={18}
-              height={18}
+              className="w-[18px] h-[18px]"
             />
             <span
               className={`text-[14px] font-500  transition-colors duration-200 ${

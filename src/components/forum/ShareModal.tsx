@@ -1,7 +1,6 @@
 "use client";
 
 import { X, Copy, Link2, Share2 } from "lucide-react";
-import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Kantumruy_Pro } from "next/font/google";
 import { useTranslations } from "@/lib/i18n";
@@ -214,12 +213,10 @@ export default function ShareModal({ onClose, link, postId }: ShareModalProps) {
                   <div
                     className={`h-14 w-14 rounded-2xl ${app.color} flex items-center justify-center shadow-sm transition-transform duration-200 hover:scale-110`}
                   >
-                    <Image
+                    <img
                       src={app.icon}
                       alt={app.name}
-                      width={28}
-                      height={28}
-                      className="rounded-full"
+                      className="w-7 h-7 rounded-full"
                     />
                   </div>
                   <span className="text-xs font-medium text-gray-700 whitespace-nowrap">

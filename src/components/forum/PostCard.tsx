@@ -10,7 +10,6 @@ import {
   Clock,
   MoreVertical,
 } from "lucide-react";
-import Image from "next/image";
 import { Kantumruy_Pro } from "next/font/google";
 import { useTranslations } from "@/lib/i18n";
 
@@ -124,12 +123,10 @@ const PostCard = ({
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <Image
+            <img
               src={avatarSrc}
               alt="User Avatar"
-              width={40}
-              height={40}
-              className="rounded-full object-cover transition-transform duration-200 hover:scale-105"
+              className="w-10 h-10 rounded-full object-cover transition-transform duration-200 hover:scale-105"
             />
             <div className="flex flex-col">
               <span className="font-medium text-[14px] text-[#0d1b2a] wrap-break-word">

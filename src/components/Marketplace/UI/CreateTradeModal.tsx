@@ -468,11 +468,9 @@ const CreateTradeModal: React.FC<CreateTradeModalProps> = ({
                 <div className="grid grid-cols-3 gap-2">
                   {imagePreviews.map((preview, index) => (
                     <div key={index} className="relative">
-                      <Image
+                      <img
                         src={preview}
                         alt={`Preview ${index + 1}`}
-                        width={80}
-                        height={80}
                         className="w-20 h-20 object-cover rounded-lg"
                       />
                       <button

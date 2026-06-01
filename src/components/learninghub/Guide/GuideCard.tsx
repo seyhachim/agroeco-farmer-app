@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSaved } from "../Saved/SavedContext";
 import { motion } from "framer-motion";
@@ -116,21 +115,19 @@ const GuideCard: React.FC<Guide> = (props) => {
           </span>
 
           <div className="flex items-center gap-1">
-            <Image
+            <img
               src="/icons/learninghub/icon_calendar.svg"
               alt={tLearninghub("calendar")}
-              width={14}
-              height={14}
+              className="w-[14px] h-[14px]"
             />
             <span>{props.date}</span>
           </div>
 
           <div className="flex items-center gap-1">
-            <Image
+            <img
               src="/icons/learninghub/icon_oclock.svg"
               alt={tLearninghub("readTime")}
-              width={14}
-              height={14}
+              className="w-3.5 h-3.5"
             />
             <span>{formatReadTime(props.read_time)}</span>
           </div>

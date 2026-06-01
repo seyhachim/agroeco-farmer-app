@@ -63,11 +63,9 @@ const CommentItem = ({
       )}
 
       <div className="flex gap-3">
-        <Image
+        <img
           src={avatarSrc}
           alt={user_name}
-          width={40}
-          height={40}
           className="w-10 h-10 rounded-full object-cover bg-gray-200 shrink-0 transition-transform duration-200 hover:scale-105"
         />
 

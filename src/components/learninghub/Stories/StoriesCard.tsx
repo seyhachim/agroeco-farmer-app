@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import { useSaved } from "../Saved/SavedContext";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -76,11 +75,10 @@ export const StoriesCard: React.FC<Story> = (props) => {
                 {props.username}
               </span>
               <div className="flex items-center gap-2 text-[11px] sm:text-xs md:text-sm text-gray-500">
-                <Image
+                <img
                   src="/icons/learninghub/icon_location.svg"
                   alt={tLearninghub("location")}
-                  width={10}
-                  height={10}
+                  className="w-2.5 h-2.5"
                 />
                 <span className="truncate max-w-[160px] sm:max-w-[220px] md:max-w-none">
                   {props.location}
@@ -102,31 +100,28 @@ export const StoriesCard: React.FC<Story> = (props) => {
           {/* META INFO */}
           <div className="flex flex-wrap items-center gap-3 text-[#6B7280] text-[11px] sm:text-xs md:text-sm">
             <div className="flex gap-1 items-center">
-              <Image
+              <img
                 src="/icons/learninghub/icon_calendar.svg"
                 alt={tLearninghub("calendar")}
-                width={14}
-                height={14}
+                className="w-3.5 h-3.5"
               />
               <span>{props.date}</span>
             </div>
 
             <div className="flex gap-1 items-center">
-              <Image
+              <img
                 src="/icons/learninghub/icon_oclock.svg"
                 alt={tLearninghub("readTime")}
-                width={14}
-                height={14}
+                className="w-3.5 h-3.5"
               />
               <span>{formatReadTime(props.read_time)}</span>
             </div>
 
             <div className="flex gap-1 items-center">
-              <Image
+              <img
                 src="/icons/learninghub/heart.svg"
                 alt={tLearninghub("likes")}
-                width={14}
-                height={14}
+                className="w-3.5 h-3.5"
               />
               <span>{props.likes_count}</span>
             </div>
