@@ -23,9 +23,9 @@ LLM answer
 # Folder structure
 ai_service/
 ├── main.py #FastAPI server
-├── llm.py #use Qwen3(Qwen/Qwen3-4B-Instruct-2507) or SEA-LION connection (aisingapore/Gemma-SEA-LION-v3-9B)
+├── llm.py #use Qwen3(Qwen/Qwen3-4B-Instruct-2507) https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507 or SEA-LION connection (aisingapore/Gemma-SEA-LION-v3-9B) https://huggingface.co/aisingapore/Gemma-SEA-LION-v3-9B
 ├── rag.py #RAG pipeline
-├── embedding.py #BGE-M3 embeddings (BAAI/bge-m3)
+├── embedding.py #BGE-M3 embeddings (BAAI/bge-m3) https://huggingface.co/BAAI/bge-m3
 ├── qdrant_db.py #Qdrant connection
 ├── whisper_stt.py #Voice → text (https://github.com/openai/whisper.git)
 ├── ingest.py #Push app data into Qdrant
@@ -64,3 +64,5 @@ Ollama Qwen3 generates answer
 ↓
 
 Return answer to Next.js
+
+
