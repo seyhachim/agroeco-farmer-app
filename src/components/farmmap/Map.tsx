@@ -4,36 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useTranslations } from "@/lib/i18n";
 import MapLoader from "./MapLoader";
-
-const FILTER_MAP: Record<string, string[]> = {
-  ទាំងអស់: [
-    "Farm",
-    "NGO",
-    "Store/Market",
-    "Education Center",
-    "Processing Facility",
-  ],
-  អង្គការ: ["NGO"],
-  ហាង: ["Store/Market"],
-  កសិដ្ឋាន: ["Farm"],
-  មជ្ឈមណ្ឌលអប់រំ: ["Education Center"],
-  សម្ភារៈ: ["Processing Facility"],
-};
-
-const FILTER_MAP_EN: Record<string, string[]> = {
-  All: [
-    "Farm",
-    "NGO",
-    "Store/Market",
-    "Education Center",
-    "Processing Facility",
-  ],
-  Organization: ["NGO"],
-  Shop: ["Store/Market"],
-  Farm: ["Farm"],
-  "Education Center": ["Education Center"],
-  Equipment: ["Processing Facility"],
-};
+import { FILTER_MAP } from "./constants/farmMap";
 
 declare global {
   interface Window {
@@ -156,28 +127,17 @@ const Map: React.FC<MapProps> = ({
     markersRef.current.forEach((marker) => marker.setMap(null));
     markersRef.current = [];
 
-    const currentFilterMap = lang === "kh" ? FILTER_MAP : FILTER_MAP_EN;
-    const allKey = lang === "kh" ? "ទាំងអស់" : "All";
+    const ALL_TYPES = ["Farm", "NGO", "Store/Market", "Education Center", "Processing Facility"];
+    const ALL_KEYS = ["ទាំងអស់", "All"];
 
-    const getEnglishRemarksFromFilters = (filters: string[]): string[] => {
-      if (filters.includes(allKey)) {
-        return currentFilterMap[allKey];
+    const resolveFilters = (filters: string[]): string[] => {
+      if (filters.length === 0 || filters.some((f) => ALL_KEYS.includes(f))) {
+        return ALL_TYPES;
       }
-      return filters.flatMap((filter) => currentFilterMap[filter] || []);
+      return filters.flatMap((f) => FILTER_MAP[f] || []);
     };
 
-    const englishRemarksFromFilters =
-      getEnglishRemarksFromFilters(selectedFilters);
-
-    let activeFilters: string[] = [];
-
-    if (selectedFilters.length > 0) {
-      activeFilters = englishRemarksFromFilters;
-    } else if (selectedRemarks.length > 0) {
-      activeFilters = selectedRemarks;
-    } else {
-      activeFilters = currentFilterMap[allKey];
-    }
+    const activeFilters = resolveFilters(selectedFilters.length > 0 ? selectedFilters : selectedRemarks);
 
     const filteredFarms = farms.filter((farm) => {
       const farmType = farm.type;

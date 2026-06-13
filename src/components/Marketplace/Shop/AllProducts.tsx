@@ -86,7 +86,7 @@ const AllProducts: React.FC<Props> = ({
       setProducts(productsData);
       console.log(`Loaded ${productsData.length} products`);
     } catch (err) {
-      console.error("Error loading products:", err);
+      console.error("Error loading products:", err instanceof Error ? err.message : JSON.stringify(err));
       setError(t("error"));
     } finally {
       setIsLoading(false);

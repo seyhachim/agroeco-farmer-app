@@ -1,6 +1,6 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { supabase } from "../../../lib/supabase";
+import { supabase, ensureValidSession } from "../../../lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 
 interface FavContextType {
@@ -26,6 +26,12 @@ export const FavProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsLoading(true);
 
       if (!user) {
+        setFavoriteIds([]);
+        return;
+      }
+
+      const session = await ensureValidSession();
+      if (!session) {
         setFavoriteIds([]);
         return;
       }
@@ -57,6 +63,9 @@ export const FavProvider: React.FC<{ children: React.ReactNode }> = ({
       return;
     }
 
+    const session = await ensureValidSession();
+    if (!session) return;
+
     const { error } = await supabase
       .from("favorites")
       .insert([{ user_id: user.id, product_id: productId }]);
@@ -68,6 +77,9 @@ export const FavProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const removeFavorite = async (productId: string) => {
     if (!user) return;
+
+    const session = await ensureValidSession();
+    if (!session) return;
 
     const { error } = await supabase
       .from("favorites")

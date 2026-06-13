@@ -1,5 +1,5 @@
 // lib/api/reviewsApi.ts - UPDATED WITH BEST SELLER LOGIC
-import { supabase } from "../supabase";
+import { supabase, ensureValidSession } from "../supabase";
 import { marketplaceApi } from "./marketplaceApi";
 
 export interface Review {
@@ -30,6 +30,7 @@ export const reviewsApi = {
   // Get reviews for a product
   async getProductReviews(productId: string): Promise<Review[]> {
     try {
+      await ensureValidSession();
       const { data: reviews, error } = await supabase
         .from("reviews")
         .select("*")

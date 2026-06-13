@@ -1,4 +1,4 @@
-import { supabase } from "../supabase";
+import { supabase, ensureValidSession } from "../supabase";
 
 export interface Product {
   id: string;
@@ -515,6 +515,8 @@ export const marketplaceApi = {
     search?: string;
   }): Promise<Product[]> {
     try {
+      const session = await ensureValidSession();
+      if (!session) throw new Error("Not authenticated");
       console.log(" Getting products with filters:", filters);
 
       // Simple query - just get products
@@ -642,6 +644,8 @@ export const marketplaceApi = {
   // Get product by ID
   async getProductById(id: string): Promise<Product | null> {
     try {
+      const session = await ensureValidSession();
+      if (!session) throw new Error("Not authenticated");
       console.log(" Getting product by ID:", id);
 
       // Get product
@@ -694,6 +698,8 @@ export const marketplaceApi = {
   // Get user's products
   async getUserProducts(): Promise<Product[]> {
     try {
+      const session = await ensureValidSession();
+      if (!session) throw new Error("Not authenticated");
       const {
         data: { user },
         error: authError,

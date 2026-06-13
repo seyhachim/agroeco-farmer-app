@@ -17,3 +17,8 @@ Call supabase.auth.setSession(...) with the tokens.
 User is now logged in automatically.
 
 # Display their info.
+cd d:\work\agroeco-farmer-app\ai_service
+.\venv\Scripts\Activate.ps1
+uvicorn app.main:app --reload
+cd d:\work\agroeco-farmer-app
+npm run dev
