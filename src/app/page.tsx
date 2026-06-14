@@ -8,6 +8,7 @@ import FeatureGrid from "@/components/Home/FeatureGrid";
 import NewsSection from "@/components/Home/NewsSection";
 import BottomNav from "@/components/Navigation/BottomNav";
 import UserInfo from "@/components/Header/UserInfo";
+import ProfileButton from "@/components/Header/ProfileButton";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("Home");
@@ -37,7 +38,10 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 pb-16">
       <header className="bg-green-800 text-white p-6">
-        <UserInfo user={user} />
+        <div className="flex items-center justify-between mb-2">
+          <UserInfo user={user} />
+          <ProfileButton />
+        </div>
         <WeatherCard weather={weather} location={location} />
       </header>
 

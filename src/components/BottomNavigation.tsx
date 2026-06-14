@@ -4,11 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 export default function BottomNavigation() {
   const [activeTab, setActiveTab] = useState("home");
   const pathname = usePathname();
+  const router = useRouter();
+  const { logout } = useAuth();
+
+  const handleSignOut = async () => {
+    await logout();
+    router.push("/auth/login");
+  };
 
   // Hide bottom nav on /map
   if (pathname === "/map") return null;
@@ -18,7 +26,7 @@ export default function BottomNavigation() {
     { icon: "🏠", label: "Home", href: "/", id: "home" },
     { icon: "🚗", label: "Transport", href: "/transport", id: "transport" },
     { icon: "💬", label: "Messages", href: "/messages", id: "messages" },
-    { icon: "👤", label: "Profile", href: "/main/profile", id: "profile" },
+    { icon: "👤", label: "Profile", href: "/dashboard", id: "profile" },
   ];
 
   return (
@@ -43,6 +51,14 @@ export default function BottomNavigation() {
             </Link>
           </Button>
         ))}
+        <Button
+          variant="ghost"
+          className="flex-1 flex flex-col items-center py-3 px-4 text-xs relative"
+          onClick={handleSignOut}
+        >
+          <span className="text-lg mb-1">🚪</span>
+          <span>Sign Out</span>
+        </Button>
       </div>
     </nav>
   );

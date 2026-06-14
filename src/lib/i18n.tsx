@@ -23,6 +23,24 @@ export type Messages = {
     switchToSignup: string;
     welcome: string;
     subtitle: string;
+    platformDescription: string;
+    featureMapTitle: string;
+    featureMapDesc: string;
+    featureKnowledgeTitle: string;
+    featureKnowledgeDesc: string;
+    featureMarketplaceTitle: string;
+    featureMarketplaceDesc: string;
+    featureForumTitle: string;
+    featureForumDesc: string;
+    highlightsTitle: string;
+    highlightsSubtitle: string;
+    highlightMarketplaceLabel: string;
+    highlightKnowledgeLabel: string;
+    highlightForumLabel: string;
+    newsTitle: string;
+    newsSubtitle: string;
+    seeMore: string;
+    getStarted: string;
     language: string;
     darkMode: string;
     lightMode: string;
@@ -393,6 +411,25 @@ export const messages: Record<Language, Messages> = {
       switchToSignup: "មិនទាន់មានគណនី? ចុះឈ្មោះ",
       welcome: "សូមស្វាគមន៍",
       subtitle: "ចូលរួមជាមួយកសិករកម្ពុជា",
+      platformDescription:
+        "AgroEco ជាវេទិកាមួយដែលជួយកសិករកម្ពុជាភ្ជាប់ទំនាក់ទំនង រៀនបច្ចេកទេសកសិកម្មប្រកបដោយចីរភាព ស្វែងរកទីតាំងកសិដ្ឋាន និងជួញដូរផលិតផលនៅលើទីផ្សារតែមួយ។",
+      featureMapTitle: "ផែនទីកសិដ្ឋាន",
+      featureMapDesc: "រកមើល និងបង្ហោះទីតាំងកសិដ្ឋាននៅជិតអ្នក",
+      featureKnowledgeTitle: "ចំណេះដឹងកសិកម្ម",
+      featureKnowledgeDesc: "ការណែនាំ និងរឿងរ៉ាវអំពីកសិកម្មប្រកបដោយចីរភាព",
+      featureMarketplaceTitle: "ទីផ្សារ",
+      featureMarketplaceDesc: "ទិញ លក់ និងផ្លាស់ប្តូរផលិតផលកសិកម្ម",
+      featureForumTitle: "វេទិកាសហគមន៍",
+      featureForumDesc: "ជជែក និងចែករំលែកជាមួយកសិករផ្សេងទៀត",
+      highlightsTitle: "ស្វែងយល់បន្ថែម",
+      highlightsSubtitle: "ហើយនេះជាខ្លះៗដែលកំពុងកើតឡើងនៅលើ AgroEco",
+      highlightMarketplaceLabel: "ទីផ្សារ",
+      highlightKnowledgeLabel: "ចំណេះដឹងកសិកម្ម",
+      highlightForumLabel: "វេទិកាសហគមន៍",
+      newsTitle: "ព័ត៌មានថ្មីៗ",
+      newsSubtitle: "បទពិសោធន៍ និងព័ត៌មានថ្មីៗពីសហគមន៍កសិករ",
+      seeMore: "មើលច្រើនទៀត",
+      getStarted: "ចាប់ផ្តើមឥឡូវនេះ",
       language: "ភាសា",
       darkMode: "របៀបងងឹត",
       lightMode: "របៀបពន្លឺ",
@@ -778,6 +815,25 @@ export const messages: Record<Language, Messages> = {
       switchToSignup: "Don't have an account? Sign up",
       welcome: "Welcome",
       subtitle: "Join Cambodian Farmers Community",
+      platformDescription:
+        "AgroEco connects Cambodian farmers to share knowledge on sustainable farming, discover farms near you, and trade products all in one platform.",
+      featureMapTitle: "Farm Map",
+      featureMapDesc: "Discover and list farms near you",
+      featureKnowledgeTitle: "Farming Knowledge",
+      featureKnowledgeDesc: "Guides and stories on sustainable agriculture",
+      featureMarketplaceTitle: "Marketplace",
+      featureMarketplaceDesc: "Buy, sell, and trade farm products",
+      featureForumTitle: "Community Forum",
+      featureForumDesc: "Chat and connect with other farmers",
+      highlightsTitle: "Discover More",
+      highlightsSubtitle: "Here's what's happening on AgroEco right now",
+      highlightMarketplaceLabel: "Marketplace",
+      highlightKnowledgeLabel: "Farming Knowledge",
+      highlightForumLabel: "Community Forum",
+      newsTitle: "Latest News",
+      newsSubtitle: "Stories and updates from the farming community",
+      seeMore: "See More",
+      getStarted: "Get Started",
       language: "Language",
       darkMode: "Dark Mode",
       lightMode: "Light Mode",

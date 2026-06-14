@@ -22,3 +22,17 @@ cd d:\work\agroeco-farmer-app\ai_service
 uvicorn app.main:app --reload
 cd d:\work\agroeco-farmer-app
 npm run dev
+
+## Admin role
+
+One-time setup: run `supabase/sql/add_role_column.sql` in the Supabase SQL editor to add a
+`role` column (`farmer` | `admin`, default `farmer`) to `user_profiles`.
+
+Promote a user to admin by email:
+
+```
+npm run set-admin -- you@example.com
+```
+
+Admins who open `/dashboard` (the profile icon in the bottom nav) see the Admin Dashboard;
+everyone else sees the regular profile dashboard.

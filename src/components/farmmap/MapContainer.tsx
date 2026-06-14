@@ -9,7 +9,7 @@ import SearchResults from "./SearchResults";
 import MarkerDetailPopup from "./MarkerDetailPopup";
 import NotePopup from "./NotePopup";
 import { REMARKS } from "./constants/farmMap";
-import { supabase } from "@/lib/supabase";
+import { supabase, ensureValidSession } from "@/lib/supabase";
 import { Kantumruy_Pro } from "next/font/google";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "@/lib/i18n";
@@ -57,6 +57,7 @@ const FarmMapPage = () => {
 
   const fetchFarmData = async () => {
     setLoading(true);
+    await ensureValidSession();
     const { data, error } = await supabase.from("farm_data").select("*");
 
     if (error) {

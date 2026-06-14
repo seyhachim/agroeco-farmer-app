@@ -8,7 +8,12 @@ interface ProtectedRouteProps {
   children: ReactNode;
 }
 
-const publicRoutes = ["/", "/auth/login", "/auth/signup", "/auth/confirm"];
+const publicRoutes = [
+  "/welcome",
+  "/auth/login",
+  "/auth/signup",
+  "/auth/confirm",
+];
 const publicPrefixes = ["/knowledge"];
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
@@ -22,7 +27,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   useEffect(() => {
     if (!loading && user === null && !isPublic) {
-      router.push("/auth/login");
+      router.push("/welcome");
     }
   }, [user, loading, isPublic, router]);
 

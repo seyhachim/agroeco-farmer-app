@@ -17,9 +17,14 @@ export const supabase = createBrowserClient(
 // Ensure a valid session before making authenticated requests.
 // Uses getUser() which always validates against the server and triggers
 // an automatic token refresh via the refresh token if the JWT is expired.
+// If the refresh token itself is dead, clears the stale session so the
+// app doesn't keep retrying with invalid credentials.
 export async function ensureValidSession() {
   const { data: { user }, error } = await supabase.auth.getUser();
-  if (error || !user) return null;
+  if (error || !user) {
+    await supabase.auth.signOut();
+    return null;
+  }
   return user;
 }
 

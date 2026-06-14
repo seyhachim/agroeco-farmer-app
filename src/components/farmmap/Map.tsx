@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { supabase, ensureValidSession } from "@/lib/supabase";
 import { useTranslations } from "@/lib/i18n";
 import MapLoader from "./MapLoader";
 import { FILTER_MAP } from "./constants/farmMap";
@@ -45,6 +45,7 @@ const Map: React.FC<MapProps> = ({
 
   const fetchFarms = async () => {
     setMapLoading(true);
+    await ensureValidSession();
     const { data, error } = await supabase
       .from("farm_data")
       .select("*")

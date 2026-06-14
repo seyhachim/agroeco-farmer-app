@@ -1,6 +1,8 @@
 import { createClient } from "@/utils/supabase/server";
+import { supabaseAdmin } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
 import SignOutButton from "@/app/dashboard/sign-out-button";
+import AdminDashboard from "@/app/dashboard/AdminDashboard";
 
 export default async function Dashboard() {
   // FIX: Add 'await' here
@@ -19,6 +21,52 @@ export default async function Dashboard() {
   const fullName = telegramData.full_name || "User";
   const emailDisplay = user.email || "No Email (Telegram)";
   const isTelegram = !!telegramData.telegram_id;
+
+  const { data: profile } = await supabase
+    .from("user_profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (profile?.role === "admin") {
+    const [
+      { count: totalUsers },
+      { count: totalPosts },
+      { count: totalProducts },
+      { count: totalFarms },
+      { count: totalTrades },
+    ] = await Promise.all([
+      supabaseAdmin
+        .from("user_profiles")
+        .select("*", { count: "exact", head: true }),
+      supabaseAdmin.from("posts").select("*", { count: "exact", head: true }),
+      supabaseAdmin
+        .from("products")
+        .select("*", { count: "exact", head: true }),
+      supabaseAdmin
+        .from("farm_data")
+        .select("*", { count: "exact", head: true }),
+      supabaseAdmin
+        .from("trade_requests")
+        .select("*", { count: "exact", head: true }),
+    ]);
+
+    const kpis = [
+      { label: "Users", value: totalUsers ?? 0 },
+      { label: "Posts", value: totalPosts ?? 0 },
+      { label: "Products", value: totalProducts ?? 0 },
+      { label: "Farms", value: totalFarms ?? 0 },
+      { label: "Trades", value: totalTrades ?? 0 },
+    ];
+
+    return (
+      <AdminDashboard
+        displayName={fullName}
+        userId={user.id}
+        kpis={kpis}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 flex flex-col items-center">

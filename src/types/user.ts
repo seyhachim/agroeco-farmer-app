@@ -7,6 +7,7 @@ export interface UserProfile {
   avatar_url: string | null;
   location: string | null;
   website: string | null;
+  role: "farmer" | "admin";
   created_at: string;
   updated_at: string;
 }

@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "set-admin": "node --env-file=.env.local scripts/set-admin.mjs"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -28,6 +29,7 @@
     "react-dom": "19.1.0",
     "react-icons": "^5.5.0",
     "react-markdown": "^10.1.0",
+    "recharts": "^3.8.1",
     "remark-gfm": "^4.0.1",
     "swiper": "^12.0.3",
     "tailwind-merge": "^3.3.1"

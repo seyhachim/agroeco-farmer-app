@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Funnel, ChevronLeft, CircleX } from "lucide-react";
+import { Funnel, ChevronLeft, CircleX, User } from "lucide-react";
 import { Poppins, Roboto } from "next/font/google";
 import { useTranslations } from "@/lib/i18n";
+import { useAuth } from "@/context/AuthContext";
 
 import { FILTER_MAP } from "./constants/farmMap";
 
@@ -33,6 +34,7 @@ const TopBar: React.FC<TopBarProps> = ({
   toggleFilter,
 }) => {
   const { t, lang } = useTranslations();
+  const { user, loading } = useAuth();
 
   const getFilterLabel = (filter: string) => {
     const translations: Record<string, string> = {
@@ -102,6 +104,15 @@ const TopBar: React.FC<TopBarProps> = ({
               <CircleX size={16} className="text-gray-500" />
             </motion.button>
           )}
+        </motion.div>
+
+        <motion.div whileTap={{ scale: 0.95 }}>
+          <Link
+            href={loading ? "#" : user ? "/profile" : "/auth/login"}
+            className="flex items-center justify-center h-10 w-10 rounded-full bg-[#EBECF0] hover:bg-[#dde0e6] transition shrink-0"
+          >
+            <User size={20} color="#5B5B5B" />
+          </Link>
         </motion.div>
       </div>
 

@@ -12,7 +12,7 @@ export default function BottomNav() {
     { icon: Home, label: "Home", href: "/" },
     { icon: MapPin, label: "Map", href: "/map" },
     { icon: MessageCircle, label: "Messages", href: "/messages", badge: 2 },
-    { icon: "👤", label: "Profile", href: "/profile" },
+    { icon: "👤", label: "Profile", href: "/dashboard" },
   ];
 
   return (

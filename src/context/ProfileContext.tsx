@@ -59,18 +59,18 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
     if (!user) return;
 
     try {
-      const { error } = await supabase
-        .from("user_profiles")
-        .update({
-          ...updates,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", user.id);
+      const { error } = await supabase.from("user_profiles").upsert({
+        id: user.id,
+        ...updates,
+        updated_at: new Date().toISOString(),
+      });
 
       if (error) throw error;
 
       // Update local state
-      setProfile((prev) => (prev ? { ...prev, ...updates } : null));
+      setProfile((prev) =>
+        prev ? { ...prev, ...updates } : ({ id: user.id, ...updates } as UserProfile)
+      );
     } catch (error) {
       console.error("Error updating profile:", error);
       throw error;
