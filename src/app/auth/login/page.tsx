@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
 import { useTranslations } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
@@ -20,6 +21,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isMounted, setIsMounted] = useState(false);
   const [isTelegram, setIsTelegram] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
 
@@ -158,15 +160,30 @@ export default function LoginPage() {
 
             <div>
               <Label htmlFor="password">{t("password")}</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="mt-1"
-                disabled={loading}
-                required
-              />
+              <div className="relative mt-1">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pr-10"
+                  disabled={loading}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-600"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
+                </button>
+              </div>
             </div>
 
             <Button type="submit" className="w-full h-12" disabled={loading}>

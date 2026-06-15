@@ -16,9 +16,9 @@ export default function AdminDashboard({
   kpis,
 }: AdminDashboardProps) {
   return (
-    <div className="min-h-screen bg-gray-50 p-4 flex flex-col items-center">
-      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="bg-gray-900 p-6 text-white">
+    <div className="min-h-screen bg-gray-50">
+      <div className="w-full bg-white overflow-hidden">
+        <div className="bg-[#0E4123] p-6 text-white">
           <Link
             href="/"
             className="inline-flex items-center gap-1 text-sm opacity-90 hover:opacity-100 transition mb-2"

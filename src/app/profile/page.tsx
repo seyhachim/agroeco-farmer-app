@@ -131,123 +131,158 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 space-y-4">
-      {/* Header */}
-      <div className="flex items-center">
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="p-2 hover:bg-gray-200 rounded-lg transition"
-          aria-label="Go back"
-        >
-          <ArrowLeft className="text-[#0D1B2A]" size={22} />
-        </button>
-      </div>
-
-      {/* Avatar card */}
-      <div className="rounded-2xl bg-white shadow-md p-6 flex flex-col items-center text-center relative">
-        {!isEditing && (
-          <button
-            type="button"
-            onClick={startEditing}
-            className="absolute top-4 right-4 flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#0E4123]/10 text-[#0E4123] text-xs font-semibold hover:bg-[#0E4123]/20 transition"
-          >
-            <Pencil size={14} />
-            Edit
-          </button>
-        )}
-
-        <div className="relative">
-          <img
-            src={avatarPreview || avatarUrl || "/default-avatar.svg"}
-            alt={displayName}
-            className="w-24 h-24 rounded-full object-cover border-4 border-[#0E4123]/10"
-          />
-
-          {isEditing && (
+    <div className="min-h-screen bg-gray-50">
+      <div className="w-full bg-white overflow-hidden">
+        {/* Banner */}
+        <div className="relative bg-[#0E4123] px-6 pt-6 pb-16">
+          <div className="flex items-center justify-between">
             <button
               type="button"
-              onClick={() => fileInputRef.current?.click()}
-              title="Change profile picture"
-              aria-label="Change profile picture"
-              className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-[#0E4123] text-white flex items-center justify-center shadow-md hover:bg-[#0B3118] transition"
+              onClick={() => router.back()}
+              className="inline-flex items-center gap-1 text-sm text-white/80 hover:text-white transition"
+              aria-label="Go back"
             >
-              <Camera size={16} />
+              <ArrowLeft className="w-4 h-4" />
+              Back
             </button>
-          )}
-          <input
-            type="file"
-            ref={fileInputRef}
-            accept="image/*"
-            title="Profile picture"
-            onChange={handleAvatarSelect}
-            className="hidden"
-          />
+
+            {!isEditing && (
+              <button
+                type="button"
+                onClick={startEditing}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/10 text-white text-xs font-semibold hover:bg-white/20 transition"
+              >
+                <Pencil size={14} />
+                Edit
+              </button>
+            )}
+          </div>
+
+          <h1 className="mt-4 text-2xl font-bold text-white">My Profile</h1>
+          <p className="text-white/60 text-sm mt-1">
+            Manage your account information
+          </p>
         </div>
 
-        {isEditing ? (
-          <input
-            type="text"
-            value={nameInput}
-            onChange={(e) => setNameInput(e.target.value)}
-            placeholder="Full Name"
-            className="mt-4 w-full max-w-xs text-center text-xl font-bold text-[#0D1B2A] border-b border-gray-200 focus:border-[#0E4123] outline-none pb-1"
-          />
-        ) : (
-          <h1 className="mt-4 text-xl font-bold text-[#0D1B2A]">
-            {displayName}
-          </h1>
-        )}
-        <p className="text-sm text-gray-500">Farmer</p>
+        {/* Avatar overlapping banner */}
+        <div className="px-6">
+          <div className="-mt-12 flex flex-col items-center text-center">
+            <div className="relative">
+              <img
+                src={avatarPreview || avatarUrl || "/default-avatar.svg"}
+                alt={displayName}
+                className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md bg-white"
+              />
 
-        {isEditing && (
-          <div className="mt-4 flex gap-3 w-full max-w-xs">
-            <button
-              type="button"
-              onClick={cancelEditing}
-              disabled={saving}
-              className="flex-1 px-4 py-2 rounded-xl bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition disabled:opacity-50"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={saving}
-              className="flex-1 px-4 py-2 rounded-xl bg-[#0E4123] text-white font-medium hover:bg-[#0B3118] transition disabled:opacity-50"
-            >
-              {saving ? "Saving..." : "Save"}
-            </button>
+              {isEditing && (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  title="Change profile picture"
+                  aria-label="Change profile picture"
+                  className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-[#0E4123] text-white flex items-center justify-center shadow-md hover:bg-[#0B3118] transition"
+                >
+                  <Camera size={16} />
+                </button>
+              )}
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept="image/*"
+                title="Profile picture"
+                onChange={handleAvatarSelect}
+                className="hidden"
+              />
+            </div>
+
+            {isEditing ? (
+              <input
+                type="text"
+                value={nameInput}
+                onChange={(e) => setNameInput(e.target.value)}
+                placeholder="Full Name"
+                className="mt-3 w-full max-w-xs text-center text-lg font-bold text-gray-900 border-b border-gray-200 focus:border-[#0E4123] outline-none pb-1"
+              />
+            ) : (
+              <h2 className="mt-3 text-lg font-bold text-gray-900">
+                {displayName}
+              </h2>
+            )}
+
+            <span className="mt-1 inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#0E4123]/10 text-[#0E4123]">
+              Farmer
+            </span>
+
+            {isEditing && (
+              <div className="mt-4 flex gap-3 w-full max-w-xs">
+                <button
+                  type="button"
+                  onClick={cancelEditing}
+                  disabled={saving}
+                  className="flex-1 px-4 py-2 rounded-xl bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="flex-1 px-4 py-2 rounded-xl bg-[#0E4123] text-white font-medium hover:bg-[#0B3118] transition disabled:opacity-50"
+                >
+                  {saving ? "Saving..." : "Save"}
+                </button>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* Details card */}
-      <div className="rounded-2xl bg-white shadow-md divide-y divide-gray-100 overflow-hidden">
-        {fields.map(({ icon: Icon, label, value }) => (
-          <div key={label} className="flex items-start gap-3 px-4 py-3">
-            <Icon size={18} className="mt-0.5 text-[#0E4123] shrink-0" />
-            <div className="flex flex-col">
-              <span className="text-xs font-semibold text-gray-500">
-                {label}
-              </span>
-              <span className="text-sm text-[#0D1B2A] break-all">
-                {value}
-              </span>
+        {/* Details */}
+        <div className="p-6 space-y-6">
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
+              Account Details
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {fields.map(({ icon: Icon, label, value }) => (
+                <div
+                  key={label}
+                  className="p-4 bg-slate-50 rounded-xl border border-slate-100"
+                >
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Icon size={14} className="text-[#0E4123]" />
+                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      {label}
+                    </label>
+                  </div>
+                  <p
+                    className={`text-gray-800 break-all ${
+                      label === "User ID"
+                        ? "font-mono text-xs text-gray-500"
+                        : "text-sm font-medium"
+                    }`}
+                  >
+                    {value}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
-        ))}
-      </div>
 
-      <button
-        onClick={async () => {
-          await logout();
-          router.replace("/auth/login");
-        }}
-        className="w-full px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition font-medium"
-      >
-        Logout
-      </button>
+          <div className="pt-4 border-t border-gray-100">
+            <button
+              type="button"
+              onClick={async () => {
+                await logout();
+                router.replace("/auth/login");
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
