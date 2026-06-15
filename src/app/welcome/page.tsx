@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Kantumruy_Pro } from "next/font/google";
 import {
-  Leaf,
   Sprout,
   MapPin,
   BookOpen,
@@ -15,6 +14,9 @@ import {
   ArrowRight,
   ChevronLeft,
   ChevronRight,
+  Facebook,
+  Globe,
+  Phone,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "@/lib/i18n";
@@ -44,7 +46,7 @@ interface NewsItem {
 }
 
 export default function WelcomePage() {
-  const { t, lang, setLang } = useTranslations();
+  const { t, lang } = useTranslations();
   const { user, loading } = useAuth();
   const router = useRouter();
   const [highlights, setHighlights] = useState<Highlight[]>([]);
@@ -203,7 +205,7 @@ export default function WelcomePage() {
   return (
     <div className={`${kantumruyPro.className} relative flex flex-col text-white`}>
       {/* Hero section with background image */}
-      <div className="relative min-h-[70vh] flex flex-col">
+      <div className="relative min-h-[85vh] flex flex-col">
         <Image
           src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=1600&auto=format&fit=crop"
           alt="Farmer in a green field"
@@ -216,28 +218,41 @@ export default function WelcomePage() {
 
         {/* Top bar */}
         <div className="relative flex items-center justify-between px-5 pt-6">
-          <div className="flex items-center gap-2">
-            <Leaf className="h-6 w-6 text-green-400" />
-            <span className="text-lg font-bold">
-              Agro<span className="text-green-400">Eco</span>
-            </span>
+          <div className="flex items-center gap-3">
+            <Image
+              src="/agroeco-logo.png"
+              alt="AgroEco"
+              width={72}
+              height={72}
+              className="h-18 w-18 rounded-full object-cover bg-white shrink-0"
+            />
+            <div className="leading-tight w-48">
+              <p className="text-xl whitespace-nowrap">
+                <span className="text-gray-200">សមាគមនិរន្តរភាព</span>
+                <span className="text-green-400">ដីដើម្បីជីវិត</span>
+              </p>
+              <p className="text-[10px] uppercase tracking-tight text-gray-300 border-t border-gray-400/60 mt-1 pt-1 whitespace-nowrap origin-left scale-x-110">
+                Sustainable Soil for Life Association
+              </p>
+            </div>
           </div>
-          <button
-            type="button"
-            onClick={() => setLang(lang === "kh" ? "en" : "kh")}
-            className="text-sm text-white/90 bg-white/10 rounded-full px-3 py-1 backdrop-blur-sm"
-          >
-            {lang === "kh" ? "EN" : "ខ្មែរ"}
-          </button>
         </div>
 
         {/* Hero content */}
         <div className="relative flex-1 flex flex-col items-center justify-center text-center px-6 pt-6">
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-500/15 ring-1 ring-green-300/40 backdrop-blur-sm">
-            <Sprout className="h-8 w-8 text-green-300" strokeWidth={2} />
-          </div>
-          <h1 className="text-3xl font-bold leading-tight">{t("welcome")}</h1>
-          <p className="mt-3 text-white/85 max-w-xs">{t("subtitle")}</p>
+          <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-green-200 ring-1 ring-white/20 backdrop-blur-sm">
+            <Sprout className="h-4 w-4" strokeWidth={2} />
+            AgroEco
+          </span>
+          <h1 className="mt-6 text-6xl font-bold leading-tight drop-shadow-sm">
+            {t("welcome")}
+          </h1>
+          <p className="mt-4 text-xl font-medium text-white/90 max-w-sm">
+            {t("subtitle")}
+          </p>
+          <p className="mt-4 text-base leading-relaxed text-white/75 max-w-md">
+            {t("platformDescription")}
+          </p>
         </div>
 
         {/* CTA pills */}
@@ -402,6 +417,60 @@ export default function WelcomePage() {
               </span>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="relative bg-green-50 px-6 py-6">
+        <div className="flex flex-col items-center gap-3 rounded-full bg-white/60 px-4 py-3 text-center">
+          <span className="px-4 py-1 text-sm font-semibold text-black">
+            {t("footerFindUs")}
+          </span>
+          <div className="flex flex-col items-center gap-2 text-sm text-gray-700 sm:flex-row sm:gap-4">
+            <a
+              href="https://www.facebook.com/profile.php?id=100064908266791"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 hover:text-green-700"
+            >
+              <Facebook className="h-4 w-4 text-green-600" />
+              <span>ដីដើម្បីជីវិត - Soil for Life</span>
+            </a>
+            <a
+              href="https://soil4life.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 font-semibold hover:text-green-700"
+            >
+              <Globe className="h-4 w-4 text-green-600" />
+              <span>soil4life.org</span>
+            </a>
+            <a
+              href="tel:+85553738748"
+              className="flex items-center gap-1.5 hover:text-green-700"
+            >
+              <Phone className="h-4 w-4 text-green-600" />
+              <span>+855 53 738 748</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div className="relative bg-green-800 px-6 py-4 text-white">
+        <h3 className="text-base font-bold">{t("footerContactInfo")}</h3>
+        <div className="mt-3 space-y-1.5 text-sm text-green-50">
+          <p>
+            <span className="font-semibold">{t("footerTel")}</span>{" "}
+            [+855] 77 79 99 01 / [+855] 53 738 748
+          </p>
+          <p>
+            <span className="font-semibold">{t("footerEmail")}</span>{" "}
+            info@soil4life.org
+          </p>
+          <p>
+            <span className="font-semibold">{t("footerAddress")}</span>{" "}
+            {t("footerAddressValue")}
+          </p>
         </div>
       </div>
     </div>

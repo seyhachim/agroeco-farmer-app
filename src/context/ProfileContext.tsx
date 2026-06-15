@@ -5,7 +5,7 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { supabase } from "@/lib/supabase";
+import { ensureValidSession, supabase } from "@/lib/supabase";
 import { UserProfile } from "@/types/user";
 import { useAuth } from "./AuthContext";
 
@@ -40,10 +40,16 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
 
     setLoading(true);
     try {
+      const validUser = await ensureValidSession();
+      if (!validUser) {
+        setProfile(null);
+        return;
+      }
+
       const { data, error } = await supabase
         .from("user_profiles")
         .select("*")
-        .eq("id", user.id)
+        .eq("id", validUser.id)
         .single();
 
       if (error && error.code !== "PGRST116") throw error; // PGRST116 = no rows returned

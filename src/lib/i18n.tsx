@@ -41,6 +41,12 @@ export type Messages = {
     newsSubtitle: string;
     seeMore: string;
     getStarted: string;
+    footerFindUs: string;
+    footerContactInfo: string;
+    footerTel: string;
+    footerEmail: string;
+    footerAddress: string;
+    footerAddressValue: string;
     language: string;
     darkMode: string;
     lightMode: string;
@@ -430,6 +436,13 @@ export const messages: Record<Language, Messages> = {
       newsSubtitle: "បទពិសោធន៍ និងព័ត៌មានថ្មីៗពីសហគមន៍កសិករ",
       seeMore: "មើលច្រើនទៀត",
       getStarted: "ចាប់ផ្តើមឥឡូវនេះ",
+      footerFindUs: "ស្វែងរកយើង៖",
+      footerContactInfo: "ព័ត៌មានទំនាក់ទំនង",
+      footerTel: "ទូរស័ព្ទ៖",
+      footerEmail: "អ៊ីមែល៖",
+      footerAddress: "អាសយដ្ឋាន៖",
+      footerAddressValue:
+        "ភូមិសាលាបាល័ត្ត ឃុំអូម៉ាល់ ក្រុងបាត់ដំបង ខេត្តបាត់ដំបង",
       language: "ភាសា",
       darkMode: "របៀបងងឹត",
       lightMode: "របៀបពន្លឺ",
@@ -834,6 +847,13 @@ export const messages: Record<Language, Messages> = {
       newsSubtitle: "Stories and updates from the farming community",
       seeMore: "See More",
       getStarted: "Get Started",
+      footerFindUs: "Find Us:",
+      footerContactInfo: "Contact Information",
+      footerTel: "Tel:",
+      footerEmail: "Email:",
+      footerAddress: "Address:",
+      footerAddressValue:
+        "Sala Balat Village, O'Mal Sangkat, Battambang City, Battambang Province, Cambodia.",
       language: "Language",
       darkMode: "Dark Mode",
       lightMode: "Light Mode",
