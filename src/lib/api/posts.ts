@@ -91,7 +91,7 @@ export async function getPosts(
 
   // comment counts
   const { data: commentRows } = await supabase
-    .from("comments")
+    .from("post_comments")
     .select("post_id")
     .in("post_id", postIds);
 
@@ -101,7 +101,7 @@ export async function getPosts(
   });
 
   // authors batch
-  const authorIds = [...new Set(postsData.map((p: any) => p.author_id))];
+  const authorIds = [...new Set(postsData.map((p: any) => p.user_id))];
   const { data: profiles } = await supabase
     .from("user_profiles")
     .select("id, display_name, username, avatar_url")
@@ -111,12 +111,12 @@ export async function getPosts(
   profiles?.forEach((pr: any) => authorsMap.set(pr.id, pr));
 
   const posts: PostSummary[] = postsData.map((p: any) => {
-    const authorProfile = authorsMap.get(p.author_id) || {};
+    const authorProfile = authorsMap.get(p.user_id) || {};
     return {
       id: p.id,
       author: {
-        id: p.author_id,
-        name: authorProfile.display_name || authorProfile.username || "Unknown",
+        id: p.user_id,
+        name: authorProfile.display_name || authorProfile.username || p.user_name || "Unknown",
         username: authorProfile.username || "",
         avatar: authorProfile.avatar_url || null,
         badge: "",
@@ -133,7 +133,7 @@ export async function getPosts(
       shares: p.shares || 0,
       isLiked: false,
       isSaved: false,
-      images: p.images || null,
+      images: null,
       created_at: p.created_at,
       engagement_score: p.engagement_score,
     };
@@ -158,12 +158,12 @@ export async function getPostById(postId: string): Promise<PostDetail | null> {
     const { data: authorProfile } = await supabase
       .from("user_profiles")
       .select("id, display_name, username, avatar_url")
-      .eq("id", postData.author_id)
+      .eq("id", postData.user_id)
       .single();
 
     const postAuthor: Author = {
-      id: postData.author_id,
-      name: authorProfile?.display_name || authorProfile?.username || "Unknown",
+      id: postData.user_id,
+      name: authorProfile?.display_name || authorProfile?.username || postData.user_name || "Unknown",
       username: authorProfile?.username || "",
       avatar: authorProfile?.avatar_url || null,
       badge: "",
@@ -172,14 +172,14 @@ export async function getPostById(postId: string): Promise<PostDetail | null> {
     };
 
     const { data: allCommentsData } = await supabase
-      .from("comments")
+      .from("post_comments")
       .select("*")
       .eq("post_id", postId)
       .order("created_at", { ascending: true });
 
     // Build author map for comments
     const commentAuthorIds = [
-      ...new Set((allCommentsData || []).map((c: any) => c.author_id)),
+      ...new Set((allCommentsData || []).map((c: any) => c.user_id)),
     ];
 
     const { data: commentProfiles } = await supabase
@@ -194,11 +194,11 @@ export async function getPostById(postId: string): Promise<PostDetail | null> {
     const roots: CommentNode[] = [];
 
     (allCommentsData || []).forEach((c: any) => {
-      const prof = commentAuthorMap.get(c.author_id) || {};
+      const prof = commentAuthorMap.get(c.user_id) || {};
       const node: CommentNode = {
         id: c.id,
         author: {
-          id: c.author_id,
+          id: c.user_id,
           name: prof.display_name || prof.username || "User",
           username: prof.username || "",
           avatar: prof.avatar_url || null,
@@ -206,9 +206,9 @@ export async function getPostById(postId: string): Promise<PostDetail | null> {
           badgeColor: "",
           email: null,
         },
-        timestamp: c.created_at,
+        timestamp: formatTime(c.created_at),
         content: c.content,
-        likes: c.likes || 0,
+        likes: 0,
         isLiked: false,
         replies: [],
         parent_id: c.parent_id || undefined,
@@ -242,7 +242,7 @@ export async function getPostById(postId: string): Promise<PostDetail | null> {
       isLiked: false,
       isSaved: false,
       commentList: roots,
-      images: postData.images || null,
+      images: null,
       created_at: postData.created_at,
       engagement_score: postData.engagement_score,
     };

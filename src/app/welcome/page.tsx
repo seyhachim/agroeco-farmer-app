@@ -94,11 +94,16 @@ export default function WelcomePage() {
         .limit(4);
 
       if (products && products.length > 0) {
-        const { data: images } = await supabase
+        const { data: images, error: imgErr } = await supabase
           .from("product_images")
           .select("product_id, image_url")
           .in("product_id", products.map((p) => p.id))
           .order("image_order", { ascending: true });
+
+        console.log("[welcome] products:", JSON.stringify(products, null, 2));
+        console.log("[welcome] product_images:", JSON.stringify(images, null, 2));
+        console.log("[welcome] img error:", imgErr);
+        images?.forEach((img, i) => console.log(`[welcome] img[${i}] url:`, img.image_url?.substring(0, 100)));
 
         for (const product of products) {
           const image = images?.find((img) => img.product_id === product.id);
@@ -116,10 +121,10 @@ export default function WelcomePage() {
 
       const { data: guides } = await supabase
         .from("guides_data")
-        .select("id, title, image_url")
+        .select("id, title, description, image_url, created_at")
         .not("image_url", "is", null)
         .order("created_at", { ascending: false })
-        .limit(4);
+        .limit(7);
 
       if (guides && guides.length > 0) {
         for (const guide of guides) {
@@ -133,37 +138,17 @@ export default function WelcomePage() {
         }
       }
 
-      const { data: posts } = await supabase
-        .from("posts")
-        .select("id, title, content, images, created_at")
-        .not("images", "is", null)
-        .order("created_at", { ascending: false })
-        .limit(8);
-
-      const postsWithImage =
-        posts?.filter((p) => Array.isArray(p.images) && p.images.length > 0) ??
-        [];
-
-      for (const post of postsWithImage.slice(0, 4)) {
-        items.push({
-          id: post.id,
-          image: post.images[0],
-          title: post.title,
-          label: t("highlightForumLabel"),
-          href: `/forum/${post.id}`,
-        });
-      }
-
       setHighlights(items.slice(0, 9));
 
+      // Use guides for news section (they have images, descriptions, and dates)
       setNews(
-        postsWithImage.slice(0, 3).map((post) => ({
-          id: post.id,
-          image: post.images[0],
-          title: post.title,
-          excerpt: (post.content ?? "").slice(0, 120),
-          date: post.created_at,
-          href: `/forum/${post.id}`,
+        (guides ?? []).slice(0, 3).map((guide) => ({
+          id: guide.id,
+          image: guide.image_url,
+          title: guide.title,
+          excerpt: (guide.description ?? "").slice(0, 120),
+          date: guide.created_at,
+          href: `/knowledge/detail-guide/${guide.id}`,
         }))
       );
     }
@@ -317,7 +302,7 @@ export default function WelcomePage() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="relative aspect-4/5 w-[70%] sm:w-72 shrink-0 snap-start overflow-hidden"
+                className="relative block aspect-4/5 w-[70%] sm:w-72 shrink-0 snap-start overflow-hidden rounded-xl"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img

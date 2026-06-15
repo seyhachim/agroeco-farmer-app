@@ -28,6 +28,16 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "kh-products.ingjin50.workers.dev",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "fepezqcnrqejfiklsljv.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
     ],
   },
 };

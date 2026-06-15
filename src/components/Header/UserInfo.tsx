@@ -1,15 +1,19 @@
-import { TelegramUser } from "@/lib/telegram";
+import { User } from "@supabase/supabase-js";
 
-export default function UserInfo({ user }: { user: TelegramUser | null }) {
-  if (!user) return <p>Loading Telegram user...</p>;
+export default function UserInfo({ user }: { user: User | null }) {
+  const firstName =
+    user?.user_metadata?.first_name ??
+    user?.user_metadata?.full_name?.split(" ")[0] ??
+    user?.email?.split("@")[0] ??
+    "";
+
+  const lastName = user?.user_metadata?.last_name ?? "";
 
   return (
     <div>
-      <h1>
-        Hello, {user.first_name} {user.last_name || ""} 👋
+      <h1 className="text-lg font-semibold">
+        Hello, {firstName} {lastName} 👋
       </h1>
-      {/* <p>Username: @{user.username || "No username"}</p>
-      <p>User ID: {user.id}</p> */}
     </div>
   );
 }
