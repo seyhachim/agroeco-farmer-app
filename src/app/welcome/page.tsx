@@ -47,14 +47,18 @@ interface NewsItem {
 
 export default function WelcomePage() {
   const { t, lang } = useTranslations();
-  const { user, loading } = useAuth();
+  const { user, loading, isTelegram } = useAuth();
   const router = useRouter();
   const [highlights, setHighlights] = useState<Highlight[]>([]);
   const [news, setNews] = useState<NewsItem[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Inside Telegram, AuthContext silently signs the user in via initData —
+  // never send them to the login form, just let the home route wait it out.
+  const loginHref = isTelegram ? "/" : "/auth/login";
+
   const handleSeeMore = () => {
-    router.push("/auth/login");
+    router.push(loginHref);
   };
 
   const scrollHighlights = (direction: "left" | "right") => {
@@ -246,7 +250,7 @@ export default function WelcomePage() {
             {t("getStarted")}
           </p>
           <div className="flex items-center justify-center gap-3">
-            <Link href="/auth/login" className="flex-1 max-w-40">
+            <Link href={loginHref} className="flex-1 max-w-40">
               <Button className="w-full h-10 bg-green-700 hover:bg-green-800">
                 {t("login")}
               </Button>
