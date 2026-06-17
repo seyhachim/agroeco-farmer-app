@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,9 +11,6 @@ import {
   BookOpen,
   ShoppingBag,
   MessageCircle,
-  ArrowRight,
-  ChevronLeft,
-  ChevronRight,
   Facebook,
   Globe,
   Phone,
@@ -28,14 +25,6 @@ const kantumruyPro = Kantumruy_Pro({
   weight: ["400", "500", "700"],
 });
 
-interface Highlight {
-  id: string;
-  image: string;
-  title: string;
-  label: string;
-  href: string;
-}
-
 interface NewsItem {
   id: string;
   image: string;
@@ -49,27 +38,11 @@ export default function WelcomePage() {
   const { t, lang } = useTranslations();
   const { user, loading, isTelegram } = useAuth();
   const router = useRouter();
-  const [highlights, setHighlights] = useState<Highlight[]>([]);
   const [news, setNews] = useState<NewsItem[]>([]);
-  const scrollRef = useRef<HTMLDivElement>(null);
 
   // Inside Telegram, AuthContext silently signs the user in via initData —
   // never send them to the login form, just let the home route wait it out.
   const loginHref = isTelegram ? "/" : "/auth/login";
-
-  const handleSeeMore = () => {
-    router.push(loginHref);
-  };
-
-  const scrollHighlights = (direction: "left" | "right") => {
-    const container = scrollRef.current;
-    if (!container) return;
-    const amount = container.clientWidth * 0.8;
-    container.scrollBy({
-      left: direction === "left" ? -amount : amount,
-      behavior: "smooth",
-    });
-  };
 
   const formatNewsDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -87,66 +60,16 @@ export default function WelcomePage() {
   }, [user, loading, router]);
 
   useEffect(() => {
-    async function loadHighlights() {
-      const items: Highlight[] = [];
-
-      const { data: products } = await supabase
-        .from("products")
-        .select("id, title, type")
-        .eq("type", "shop")
-        .order("created_at", { ascending: false })
-        .limit(4);
-
-      if (products && products.length > 0) {
-        const { data: images, error: imgErr } = await supabase
-          .from("product_images")
-          .select("product_id, image_url")
-          .in("product_id", products.map((p) => p.id))
-          .order("image_order", { ascending: true });
-
-        console.log("[welcome] products:", JSON.stringify(products, null, 2));
-        console.log("[welcome] product_images:", JSON.stringify(images, null, 2));
-        console.log("[welcome] img error:", imgErr);
-        images?.forEach((img, i) => console.log(`[welcome] img[${i}] url:`, img.image_url?.substring(0, 100)));
-
-        for (const product of products) {
-          const image = images?.find((img) => img.product_id === product.id);
-          if (image) {
-            items.push({
-              id: product.id,
-              image: image.image_url,
-              title: product.title,
-              label: t("highlightMarketplaceLabel"),
-              href: `/resource/detail-product/${product.id}`,
-            });
-          }
-        }
-      }
-
+    async function loadNews() {
       const { data: guides } = await supabase
         .from("guides_data")
         .select("id, title, description, image_url, created_at")
         .not("image_url", "is", null)
         .order("created_at", { ascending: false })
-        .limit(7);
+        .limit(3);
 
-      if (guides && guides.length > 0) {
-        for (const guide of guides) {
-          items.push({
-            id: guide.id,
-            image: guide.image_url,
-            title: guide.title,
-            label: t("highlightKnowledgeLabel"),
-            href: `/knowledge/detail-guide/${guide.id}`,
-          });
-        }
-      }
-
-      setHighlights(items.slice(0, 9));
-
-      // Use guides for news section (they have images, descriptions, and dates)
       setNews(
-        (guides ?? []).slice(0, 3).map((guide) => ({
+        (guides ?? []).map((guide) => ({
           id: guide.id,
           image: guide.image_url,
           title: guide.title,
@@ -157,8 +80,8 @@ export default function WelcomePage() {
       );
     }
 
-    loadHighlights();
-  }, [t]);
+    loadNews();
+  }, []);
 
   if (loading || user) {
     return (
@@ -266,78 +189,6 @@ export default function WelcomePage() {
           </div>
         </div>
       </div>
-
-      {/* Live highlights from the platform */}
-      {highlights.length > 0 && (
-        <div className="relative bg-white text-gray-900 px-6 pt-8 pb-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-bold text-gray-900">
-                {t("highlightsTitle")}
-              </h2>
-              <p className="mt-1 text-sm text-gray-500">
-                {t("highlightsSubtitle")}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => scrollHighlights("left")}
-                aria-label="Scroll left"
-                className="h-8 w-8 flex items-center justify-center rounded-full bg-green-50 border border-green-100 text-green-700 hover:bg-green-100 transition-colors"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => scrollHighlights("right")}
-                aria-label="Scroll right"
-                className="h-8 w-8 flex items-center justify-center rounded-full bg-green-50 border border-green-100 text-green-700 hover:bg-green-100 transition-colors"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-          <div
-            ref={scrollRef}
-            className="mt-4 flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-          >
-            {highlights.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="relative block aspect-4/5 w-[70%] sm:w-72 shrink-0 snap-start overflow-hidden rounded-xl"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
-                <span className="absolute top-2 left-2 rounded-full bg-green-700/90 px-2 py-0.5 text-xs font-semibold text-white">
-                  {item.label}
-                </span>
-                <span className="absolute bottom-2 left-2 right-2 text-sm font-semibold text-white leading-tight line-clamp-2">
-                  {item.title}
-                </span>
-              </Link>
-            ))}
-
-            {/* See more — requires login */}
-            <button
-              type="button"
-              onClick={handleSeeMore}
-              className="relative aspect-4/5 w-[70%] sm:w-72 shrink-0 snap-start overflow-hidden rounded-xl bg-green-50 border border-green-100 flex flex-col items-center justify-center gap-2 text-green-700 hover:bg-green-100 transition-colors"
-            >
-              <div className="h-10 w-10 flex items-center justify-center rounded-full bg-green-700 text-white">
-                <ArrowRight className="h-5 w-5" />
-              </div>
-              <span className="text-base font-semibold">{t("seeMore")}</span>
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Latest news from the community */}
       {news.length > 0 && (
