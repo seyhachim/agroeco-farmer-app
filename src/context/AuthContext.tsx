@@ -38,9 +38,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
 
     async function init() {
-      const {
-        data: { user: existingUser },
-      } = await supabase.auth.getUser();
+      // getUser() has no built-in network timeout, and Telegram's in-app
+      // WebView can stall requests indefinitely — race it against a
+      // timeout so we always fall through to the Telegram login attempt
+      // (or the unauthenticated state) instead of spinning forever.
+      let existingUser: User | null = null;
+      try {
+        const {
+          data: { user: fetchedUser },
+        } = await Promise.race([
+          supabase.auth.getUser(),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("getUser timed out")), 8000)
+          ),
+        ]);
+        existingUser = fetchedUser;
+      } catch {
+        existingUser = null;
+      }
 
       if (existingUser) {
         if (!cancelled) {

@@ -19,13 +19,26 @@ export const supabase = createBrowserClient(
 // an automatic token refresh via the refresh token if the JWT is expired.
 // If the refresh token itself is dead, clears the stale session so the
 // app doesn't keep retrying with invalid credentials.
+//
+// getUser() has no built-in network timeout, and Telegram's in-app
+// WebView can stall requests indefinitely — race it against a timeout so
+// callers never hang forever waiting on this.
 export async function ensureValidSession() {
-  const { data: { user }, error } = await supabase.auth.getUser();
-  if (error || !user) {
-    await supabase.auth.signOut();
+  try {
+    const { data: { user }, error } = await Promise.race([
+      supabase.auth.getUser(),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("getUser timed out")), 10000)
+      ),
+    ]);
+    if (error || !user) {
+      await supabase.auth.signOut();
+      return null;
+    }
+    return user;
+  } catch {
     return null;
   }
-  return user;
 }
 
 // Admin client (SERVER ONLY - for auth minting)
