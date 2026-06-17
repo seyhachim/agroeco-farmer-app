@@ -57,29 +57,6 @@ export default function WelcomePage() {
     router.push("/auth/login");
   };
 
-  // Silently authenticate Telegram users in the background so the
-  // welcome page can still be shown first without blocking on login.
-  useEffect(() => {
-    if (loading || user) return;
-    const tg = (window as any).Telegram?.WebApp;
-    if (!tg?.initData) return;
-
-    fetch("/api/auth/telegram", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ initData: tg.initData }),
-    })
-      .then((r) => r.json())
-      .then(async ({ session, error: err }) => {
-        if (err || !session) return;
-        await supabase.auth.setSession({
-          access_token: session.access_token,
-          refresh_token: session.refresh_token,
-        });
-      })
-      .catch(() => {});
-  }, [loading, user]);
-
   const scrollHighlights = (direction: "left" | "right") => {
     const container = scrollRef.current;
     if (!container) return;

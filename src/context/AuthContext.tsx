@@ -35,10 +35,58 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user ?? null);
-      setLoading(false);
-    });
+    let cancelled = false;
+
+    async function init() {
+      const {
+        data: { user: existingUser },
+      } = await supabase.auth.getUser();
+
+      if (existingUser) {
+        if (!cancelled) {
+          setUser(existingUser);
+          setLoading(false);
+        }
+        return;
+      }
+
+      // No persisted session (common inside Telegram's WebView, where
+      // cookies/localStorage set on a previous page don't reliably carry
+      // over). Try to silently re-authenticate via Telegram initData
+      // before giving up, so protected routes don't bounce to /welcome
+      // on every navigation.
+      if (isTelegram) {
+        try {
+          const tg = window.Telegram?.WebApp;
+          const res = await fetch("/api/auth/telegram", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ initData: tg?.initData }),
+          });
+          const { session, error } = await res.json();
+          if (!error && session) {
+            const { data } = await supabase.auth.setSession({
+              access_token: session.access_token,
+              refresh_token: session.refresh_token,
+            });
+            if (!cancelled) {
+              setUser(data.user ?? null);
+              setLoading(false);
+            }
+            return;
+          }
+        } catch {
+          // fall through to unauthenticated state
+        }
+      }
+
+      if (!cancelled) {
+        setUser(null);
+        setLoading(false);
+      }
+    }
+
+    init();
 
     const {
       data: { subscription },
@@ -48,9 +96,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     return () => {
+      cancelled = true;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [isTelegram]);
 
   const login = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
